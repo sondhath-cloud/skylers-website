@@ -143,49 +143,63 @@ function validateForm() {
 }
 
 // Scheduler Form Handling
-document.querySelector('.scheduler-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Validate form
-    if (!validateForm()) {
-        // Focus on first invalid field
-        const firstInvalid = document.querySelector('[aria-invalid="true"]');
-        if (firstInvalid) {
-            firstInvalid.focus();
+const schedulerForm = document.querySelector('.scheduler-form');
+if (schedulerForm) {
+    schedulerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate form
+        if (!validateForm()) {
+            // Focus on first invalid field
+            const firstInvalid = document.querySelector('[aria-invalid="true"]');
+            if (firstInvalid) {
+                firstInvalid.focus();
+            }
+            return;
         }
-        return;
-    }
-    
-    // Collect form data
-    const formData = {
-        dogName: document.getElementById('dog-name').value,
-        breed: document.getElementById('breed').value,
-        age: document.getElementById('age').value,
-        trainingGoals: document.getElementById('training-goals').value,
-        behavioralIssues: document.getElementById('behavioral-issues').value,
-        timeSlot: document.getElementById('time-slot').value,
-        submittedAt: new Date().toISOString()
-    };
-    
-    // Store in localStorage for now (in production, this would go to a server)
-    const existingBookings = JSON.parse(localStorage.getItem('pawsitiveBookings') || '[]');
-    existingBookings.push(formData);
-    localStorage.setItem('pawsitiveBookings', JSON.stringify(existingBookings));
-    
-    // Show success message
-    alert(`Thank you, ${formData.dogName}! Your session request has been submitted. We'll contact you soon to confirm your ${formData.timeSlot} appointment.`);
-    
-    // Reset form
-    this.reset();
-    
-    // Clear all error states
-    document.querySelectorAll('[aria-invalid]').forEach(field => {
-        field.setAttribute('aria-invalid', 'false');
+        
+        const submitButton = this.querySelector('button[type="submit"]');
+        
+        // Show loading state
+        showButtonLoading(submitButton);
+        
+        // Collect form data
+        const formData = {
+            dogName: document.getElementById('dog-name').value,
+            breed: document.getElementById('breed').value,
+            age: document.getElementById('age').value,
+            trainingGoals: document.getElementById('training-goals').value,
+            behavioralIssues: document.getElementById('behavioral-issues').value,
+            timeSlot: document.getElementById('time-slot').value,
+            submittedAt: new Date().toISOString()
+        };
+        
+        // Simulate form submission (replace with actual API call)
+        setTimeout(() => {
+            // Store in localStorage for now (in production, this would go to a server)
+            const existingBookings = JSON.parse(localStorage.getItem('pawsitiveBookings') || '[]');
+            existingBookings.push(formData);
+            localStorage.setItem('pawsitiveBookings', JSON.stringify(existingBookings));
+            
+            // Hide loading state
+            hideButtonLoading(submitButton);
+            
+            // Show success message
+            alert(`Thank you, ${formData.dogName}! Your session request has been submitted. We'll contact you soon to confirm your ${formData.timeSlot} appointment.`);
+            
+            // Reset form
+            this.reset();
+            
+            // Clear all error states
+            document.querySelectorAll('[aria-invalid]').forEach(field => {
+                field.setAttribute('aria-invalid', 'false');
+            });
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.classList.remove('show');
+            });
+        }, 2000);
     });
-    document.querySelectorAll('.error-message').forEach(error => {
-        error.classList.remove('show');
-    });
-});
+}
 
 // Real-time validation
 document.addEventListener('DOMContentLoaded', function() {
@@ -425,6 +439,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize navigation active states
     initializeNavigation();
     
+    // Initialize animations
+    initializeAnimations();
+    
     // Add scroll effect to navigation
     window.addEventListener('scroll', () => {
         const navbar = document.querySelector('.navbar');
@@ -624,4 +641,56 @@ function initializeNavigation() {
     
     // Update on page load
     updateActiveNav();
+}
+
+// Loading States and Animations
+function initializeAnimations() {
+    // Scroll animations
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, observerOptions);
+    
+    animateElements.forEach(element => {
+        observer.observe(element);
+    });
+}
+
+// Button Loading State Handler
+function showButtonLoading(button) {
+    button.classList.add('btn-loading');
+    button.disabled = true;
+}
+
+function hideButtonLoading(button) {
+    button.classList.remove('btn-loading');
+    button.disabled = false;
+}
+
+// Form Loading States
+function handleFormSubmission(form, callback) {
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading state
+        showButtonLoading(submitButton);
+        
+        // Simulate form processing (replace with actual form handling)
+        setTimeout(() => {
+            hideButtonLoading(submitButton);
+            if (callback) callback();
+        }, 2000);
+    });
 }
