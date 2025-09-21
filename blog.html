@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Tips Blog - Canine Coaching</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .blog-page {
+            padding-top: 120px;
+            min-height: 100vh;
+        }
+        
+        .blog-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 2rem 0;
+        }
+        
+        .blog-posts {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .blog-post {
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .blog-post:hover {
+            transform: translateY(-5px);
+        }
+        
+        .blog-post-header {
+            padding: 2rem;
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .blog-post-title {
+            color: #f4f4f4;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-post-meta {
+            color: #f4f4f4;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .blog-post-content {
+            padding: 2rem;
+        }
+        
+        .blog-post-excerpt {
+            color: #e8e8e8;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        
+        .read-full {
+            color: #f4f4f4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .read-full:hover {
+            color: #d4af37;
+        }
+        
+        .back-to-home {
+            display: inline-block;
+            margin-bottom: 2rem;
+            color: #f4f4f4;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .back-to-home:hover {
+            color: #d4af37;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>🐾 Canine Coaching</h2>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#rates" class="nav-link">Rates</a>
+                <a href="index.html#testimonials" class="nav-link">Testimonials</a>
+                <a href="index.html#scheduler" class="nav-link">Schedule</a>
+                <a href="index.html#quiz" class="nav-link">Quiz</a>
+                <a href="blog.html" class="nav-link">Blog</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Page Content -->
+    <div class="blog-page">
+        <div class="container">
+            <a href="index.html" class="back-to-home">← Back to Home</a>
+            
+            <div class="blog-header">
+                <h1 class="section-title curly-hair">Training Tips and Insights</h1>
+                <p>Expert advice and practical tips for raising a well-behaved, happy dog</p>
+            </div>
+            
+            <div class="blog-posts">
+                <!-- Blog Post 1 -->
+                <article class="blog-post">
+                    <div class="blog-post-header">
+                        <h2 class="blog-post-title">5 Essential Commands Every Dog Should Know</h2>
+                        <div class="blog-post-meta">Published on March 15, 2024 • 5 min read</div>
+                    </div>
+                    <div class="blog-post-content">
+                        <p class="blog-post-excerpt">
+                            Building a strong foundation with basic commands is crucial for your dog's safety and your peace of mind. These five essential commands will help you communicate effectively with your furry friend and create a harmonious relationship...
+                        </p>
+                        <a href="#" class="read-full">Read Full Article →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 2 -->
+                <article class="blog-post">
+                    <div class="blog-post-header">
+                        <h2 class="blog-post-title">Understanding Your Dog's Body Language</h2>
+                        <div class="blog-post-meta">Published on March 10, 2024 • 7 min read</div>
+                    </div>
+                    <div class="blog-post-content">
+                        <p class="blog-post-excerpt">
+                            Dogs communicate primarily through body language, and learning to read these signals can dramatically improve your relationship. From tail wags to ear positions, discover what your dog is really trying to tell you...
+                        </p>
+                        <a href="#" class="read-full">Read Full Article →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 3 -->
+                <article class="blog-post">
+                    <div class="blog-post-header">
+                        <h2 class="blog-post-title">Puppy Socialization: The Critical First 16 Weeks</h2>
+                        <div class="blog-post-meta">Published on March 5, 2024 • 6 min read</div>
+                    </div>
+                    <div class="blog-post-content">
+                        <p class="blog-post-excerpt">
+                            The first 16 weeks of a puppy's life are crucial for their development. Proper socialization during this period can prevent behavioral issues and help your puppy grow into a confident, well-adjusted adult dog...
+                        </p>
+                        <a href="#" class="read-full">Read Full Article →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 4 -->
+                <article class="blog-post">
+                    <div class="blog-post-header">
+                        <h2 class="blog-post-title">Dealing with Separation Anxiety: A Gentle Approach</h2>
+                        <div class="blog-post-meta">Published on February 28, 2024 • 8 min read</div>
+                    </div>
+                    <div class="blog-post-content">
+                        <p class="blog-post-excerpt">
+                            Separation anxiety is one of the most common behavioral issues in dogs. Learn about the signs, causes, and gentle techniques to help your dog feel secure when you're away...
+                        </p>
+                        <a href="#" class="read-full">Read Full Article →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 5 -->
+                <article class="blog-post">
+                    <div class="blog-post-header">
+                        <h2 class="blog-post-title">Positive Reinforcement: The Science Behind Effective Training</h2>
+                        <div class="blog-post-meta">Published on February 20, 2024 • 6 min read</div>
+                    </div>
+                    <div class="blog-post-content">
+                        <p class="blog-post-excerpt">
+                            Understanding the science of positive reinforcement can transform your training approach. Discover why reward-based training is not only more effective but also builds stronger bonds with your dog...
+                        </p>
+                        <a href="#" class="read-full">Read Full Article →</a>
+                    </div>
+                </article>
+                
+                <!-- Blog Post 6 -->
+                <article class="blog-post">
+                    <div class="blog-post-header">
+                        <h2 class="blog-post-title">Creating a Dog-Friendly Home Environment</h2>
+                        <div class="blog-post-meta">Published on February 15, 2024 • 5 min read</div>
+                    </div>
+                    <div class="blog-post-content">
+                        <p class="blog-post-excerpt">
+                            Your home environment plays a crucial role in your dog's behavior and well-being. Learn how to create a space that supports good behavior and keeps your dog safe and comfortable...
+                        </p>
+                        <a href="#" class="read-full">Read Full Article →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Canine Coaching. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
