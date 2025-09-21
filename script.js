@@ -333,17 +333,24 @@ function openEditModal(sectionId) {
     modal.appendChild(modalContent);
     document.body.appendChild(modal);
     
-    // Load current content
+    // Load current content (excluding titles)
     const textContent = document.querySelector(`#${sectionId} .text-content`);
     if (textContent) {
-        document.getElementById('edit-content').value = textContent.innerText;
+        // Get only paragraph content, excluding titles
+        const paragraphs = textContent.querySelectorAll('p');
+        const paragraphText = Array.from(paragraphs).map(p => p.innerText).join('\n\n');
+        document.getElementById('edit-content').value = paragraphText;
     }
     
     // Save functionality
     document.getElementById('save-edit').addEventListener('click', () => {
         const newContent = document.getElementById('edit-content').value;
         if (textContent) {
-            textContent.innerHTML = newContent.replace(/\n/g, '<br>');
+            // Preserve the title and only update paragraphs
+            const title = textContent.querySelector('h2');
+            const titleHTML = title ? title.outerHTML : '';
+            const paragraphsHTML = newContent.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            textContent.innerHTML = titleHTML + paragraphsHTML;
         }
         document.body.removeChild(modal);
     });
