@@ -3,8 +3,8 @@
 
 const SUPABASE_CONFIG = {
     // You'll get these from your Supabase project settings
-    url: 'https://your-project-ref.supabase.co',  // Replace with your Supabase URL
-    anonKey: 'your-anon-key-here',                // Replace with your Supabase anon key
+    url: 'https://xnvylthhrjzlfridahcz.supabase.co',  // Your Supabase URL
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhudnlsdGhocmp6bGZyaWRhaGN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0ODAyODksImV4cCI6MjA3NDA1NjI4OX0.rdOHMsIDj35SUqdPDrKvwEgSx2KrGs7I32cvQws_zNc'  // Your Supabase anon key
     
     // Database table names
     tables: {
