@@ -422,6 +422,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize owner interface
     initializeOwnerInterface();
     
+    // Initialize navigation active states
+    initializeNavigation();
+    
     // Add scroll effect to navigation
     window.addEventListener('scroll', () => {
         const navbar = document.querySelector('.navbar');
@@ -585,4 +588,40 @@ function scheduleService(serviceType) {
     // Scroll to scheduler section
     document.getElementById('scheduler').scrollIntoView({ behavior: 'smooth' });
     // You could also pre-fill the form with the selected service
+}
+
+// Navigation Active States
+function initializeNavigation() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    
+    // Function to update active navigation
+    function updateActiveNav() {
+        const scrollPos = window.scrollY + 100;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                // Remove active class from all nav links
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Add active class to corresponding nav link
+                const activeLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+        });
+    }
+    
+    // Update on scroll
+    window.addEventListener('scroll', updateActiveNav);
+    
+    // Update on page load
+    updateActiveNav();
 }
