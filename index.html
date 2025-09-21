@@ -8,13 +8,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Skip Navigation Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
                 <h2>🐾 Canine Coaching</h2>
             </div>
-            <div class="nav-menu" id="nav-menu">
+            <div class="nav-menu" 
+                 id="nav-menu" 
+                 role="navigation" 
+                 aria-label="Main navigation"
+                 aria-hidden="true">
                 <a href="#home" class="nav-link">Home</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="#rates" class="nav-link">Rates</a>
@@ -24,7 +31,12 @@
                 <a href="#blog" class="nav-link">Blog</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
-            <div class="hamburger" id="hamburger">
+            <div class="hamburger" 
+                 id="hamburger" 
+                 role="button" 
+                 aria-label="Toggle navigation menu"
+                 aria-expanded="false"
+                 aria-controls="nav-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -33,12 +45,18 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="hero">
-        <video class="hero-video" autoplay muted playsinline preload="metadata">
+    <section id="home" class="hero" id="main-content">
+        <video class="hero-video" 
+               autoplay 
+               muted 
+               playsinline 
+               preload="metadata"
+               aria-label="Dogs playing and training in a park - background video"
+               poster="hero-video-poster.jpg">
             <source src="hero-video.mp4" type="video/mp4">
             <source src="hero-video.webm" type="video/webm">
             <!-- Fallback for browsers that don't support video -->
-            Your browser does not support the video tag.
+            <p>Your browser does not support the video tag. This video shows dogs playing and training in a park setting.</p>
         </video>
         <div class="video-loading">
             <p>Loading video...</p>
@@ -73,29 +91,49 @@
     <!-- Rates Section -->
     <section id="rates" class="section alt-bg">
         <div class="container">
+            <h2 class="section-title short-hair">Training Rates</h2>
             <div class="section-content">
                 <div class="image-content">
                     <img src="AdobeStock_339351727 Small.jpeg" alt="Training Rates" class="section-image">
                 </div>
                 <div class="text-content">
-                    <h2 class="section-title fluffy-hair">Training Rates</h2>
                     <div class="rates-grid">
-                        <div class="rate-card" onclick="showServicePopup('puppy')">
+                        <div class="rate-card" 
+                             onclick="showServicePopup('puppy')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Puppy Classes - $75 per session"
+                             onkeydown="handleCardKeydown(event, 'puppy')">
                             <h3>Puppy Classes</h3>
                             <p class="price">$75/session</p>
                             <p>Perfect for puppies 8-16 weeks old</p>
                         </div>
-                        <div class="rate-card" onclick="showServicePopup('basic')">
+                        <div class="rate-card" 
+                             onclick="showServicePopup('basic')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Basic Training - $100 per session"
+                             onkeydown="handleCardKeydown(event, 'basic')">
                             <h3>Basic Training</h3>
                             <p class="price">$100/session</p>
                             <p>Essential commands and behavior</p>
                         </div>
-                        <div class="rate-card" onclick="showServicePopup('behavioral')">
+                        <div class="rate-card" 
+                             onclick="showServicePopup('behavioral')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Behavioral Modification - $125 per session"
+                             onkeydown="handleCardKeydown(event, 'behavioral')">
                             <h3>Behavioral Modification</h3>
                             <p class="price">$125/session</p>
                             <p>Addressing specific behavioral issues</p>
                         </div>
-                        <div class="rate-card" onclick="showServicePopup('advanced')">
+                        <div class="rate-card" 
+                             onclick="showServicePopup('advanced')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Advanced Training - $100 per session"
+                             onkeydown="handleCardKeydown(event, 'advanced')">
                             <h3>Advanced Training</h3>
                             <p class="price">$100/session</p>
                             <p>Complex commands and specialized skills</p>
@@ -152,30 +190,66 @@
                 <div class="text-content">
                     <h2 class="section-title long-hair">Schedule Your Session</h2>
                     <p>Book a personalized training session for your dog. Choose from available time slots below.</p>
-                    <form class="scheduler-form">
+                    <form class="scheduler-form" role="form" aria-label="Schedule Training Session">
                         <div class="form-group">
-                            <label for="dog-name">Dog's Name</label>
-                            <input type="text" id="dog-name" name="dog-name" required>
+                            <label for="dog-name">Dog's Name <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="dog-name" 
+                                   name="dog-name" 
+                                   required 
+                                   aria-describedby="dog-name-error"
+                                   aria-invalid="false"
+                                   autocomplete="off">
+                            <div id="dog-name-error" class="error-message" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
-                            <label for="breed">Breed</label>
-                            <input type="text" id="breed" name="breed" required>
+                            <label for="breed">Breed <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="breed" 
+                                   name="breed" 
+                                   required 
+                                   aria-describedby="breed-error"
+                                   aria-invalid="false"
+                                   autocomplete="off">
+                            <div id="breed-error" class="error-message" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
-                            <label for="age">Age</label>
-                            <input type="text" id="age" name="age" required>
+                            <label for="age">Age <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="age" 
+                                   name="age" 
+                                   required 
+                                   aria-describedby="age-error"
+                                   aria-invalid="false"
+                                   placeholder="e.g., 2 years, 6 months"
+                                   autocomplete="off">
+                            <div id="age-error" class="error-message" role="alert" aria-live="polite"></div>
                         </div>
                         <div class="form-group">
                             <label for="training-goals">Training Goals</label>
-                            <textarea id="training-goals" name="training-goals" rows="3"></textarea>
+                            <textarea id="training-goals" 
+                                      name="training-goals" 
+                                      rows="3"
+                                      aria-describedby="training-goals-help"
+                                      placeholder="Describe what you'd like your dog to learn..."></textarea>
+                            <div id="training-goals-help" class="help-text">Optional: Tell us about your training goals</div>
                         </div>
                         <div class="form-group">
                             <label for="behavioral-issues">Behavioral Issues (if any)</label>
-                            <textarea id="behavioral-issues" name="behavioral-issues" rows="3"></textarea>
+                            <textarea id="behavioral-issues" 
+                                      name="behavioral-issues" 
+                                      rows="3"
+                                      aria-describedby="behavioral-issues-help"
+                                      placeholder="Describe any behavioral challenges..."></textarea>
+                            <div id="behavioral-issues-help" class="help-text">Optional: Share any behavioral concerns</div>
                         </div>
                         <div class="form-group">
-                            <label for="time-slot">Available Time Slots</label>
-                            <select id="time-slot" name="time-slot" required>
+                            <label for="time-slot">Available Time Slots <span class="required" aria-label="required">*</span></label>
+                            <select id="time-slot" 
+                                    name="time-slot" 
+                                    required 
+                                    aria-describedby="time-slot-error"
+                                    aria-invalid="false">
                                 <option value="">Select a time slot</option>
                                 <option value="mon-10am">Monday 10:00 AM</option>
                                 <option value="mon-2pm">Monday 2:00 PM</option>
@@ -184,6 +258,7 @@
                                 <option value="fri-10am">Friday 10:00 AM</option>
                                 <option value="fri-2pm">Friday 2:00 PM</option>
                             </select>
+                            <div id="time-slot-error" class="error-message" role="alert" aria-live="polite"></div>
                         </div>
                         <button type="submit" class="btn btn-primary">Book Session</button>
                     </form>
@@ -217,41 +292,69 @@
             <h2 class="section-title fluffy-hair">Latest Training Tips</h2>
             <div class="blog-accordion">
                 <div class="blog-item">
-                    <div class="blog-header" onclick="toggleBlog(0)">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(0)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-0"
+                         aria-label="Expand article: 5 Essential Commands Every Dog Should Know"
+                         onkeydown="handleBlogKeydown(event, 0)">
                         <h3>5 Essential Commands Every Dog Should Know</h3>
-                        <span class="blog-toggle">+</span>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
                     </div>
-                    <div class="blog-content">
+                    <div class="blog-content" id="blog-content-0">
                         <p>Master these fundamental commands to build a strong foundation for your dog's training journey...</p>
                         <a href="#" class="read-more">Read More</a>
                     </div>
                 </div>
                 <div class="blog-item">
-                    <div class="blog-header" onclick="toggleBlog(1)">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(1)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-1"
+                         aria-label="Expand article: Understanding Your Dog's Body Language"
+                         onkeydown="handleBlogKeydown(event, 1)">
                         <h3>Understanding Your Dog's Body Language</h3>
-                        <span class="blog-toggle">+</span>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
                     </div>
-                    <div class="blog-content">
+                    <div class="blog-content" id="blog-content-1">
                         <p>Learn to read the subtle signals your dog sends to better understand their needs and emotions...</p>
                         <a href="#" class="read-more">Read More</a>
                     </div>
                 </div>
                 <div class="blog-item">
-                    <div class="blog-header" onclick="toggleBlog(2)">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(2)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-2"
+                         aria-label="Expand article: Puppy Socialization: The Critical First 16 Weeks"
+                         onkeydown="handleBlogKeydown(event, 2)">
                         <h3>Puppy Socialization: The Critical First 16 Weeks</h3>
-                        <span class="blog-toggle">+</span>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
                     </div>
-                    <div class="blog-content">
+                    <div class="blog-content" id="blog-content-2">
                         <p>Why early socialization is crucial for your puppy's development and how to do it right...</p>
                         <a href="#" class="read-more">Read More</a>
                     </div>
                 </div>
                 <div class="blog-item">
-                    <div class="blog-header" onclick="toggleBlog(3)">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(3)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-3"
+                         aria-label="Expand article: Dealing with Separation Anxiety: A Gentle Approach"
+                         onkeydown="handleBlogKeydown(event, 3)">
                         <h3>Dealing with Separation Anxiety: A Gentle Approach</h3>
-                        <span class="blog-toggle">+</span>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
                     </div>
-                    <div class="blog-content">
+                    <div class="blog-content" id="blog-content-3">
                         <p>Help your dog feel secure when you're away with these proven techniques...</p>
                         <a href="#" class="read-more">Read More</a>
                     </div>

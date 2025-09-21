@@ -3,9 +3,26 @@ const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('nav-menu');
 
 hamburger.addEventListener('click', () => {
+    toggleMobileMenu();
+});
+
+// Handle keyboard interaction for hamburger menu
+hamburger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMobileMenu();
+    }
+});
+
+function toggleMobileMenu() {
+    const isExpanded = navMenu.classList.contains('active');
     hamburger.classList.toggle('active');
     navMenu.classList.toggle('active');
-});
+    
+    // Update ARIA attributes
+    hamburger.setAttribute('aria-expanded', !isExpanded);
+    navMenu.setAttribute('aria-hidden', isExpanded);
+}
 
 // Close mobile menu when clicking on a link
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -34,16 +51,37 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // Blog Accordion
 function toggleBlog(index) {
     const blogItem = document.querySelectorAll('.blog-item')[index];
+    const blogHeader = blogItem.querySelector('.blog-header');
     const isActive = blogItem.classList.contains('active');
     
     // Close all other blog items
     document.querySelectorAll('.blog-item').forEach(item => {
         item.classList.remove('active');
+        const header = item.querySelector('.blog-header');
+        if (header) {
+            header.setAttribute('aria-expanded', 'false');
+        }
     });
     
     // Toggle current item
     if (!isActive) {
         blogItem.classList.add('active');
+        blogHeader.setAttribute('aria-expanded', 'true');
+    }
+}
+
+// Keyboard handlers for interactive elements
+function handleCardKeydown(event, serviceType) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showServicePopup(serviceType);
+    }
+}
+
+function handleBlogKeydown(event, index) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleBlog(index);
     }
 }
 
@@ -65,9 +103,58 @@ function startQuiz() {
     // window.location.href = 'quiz.html';
 }
 
+// Form validation functions
+function validateField(fieldId, errorId, validator) {
+    const field = document.getElementById(fieldId);
+    const errorElement = document.getElementById(errorId);
+    const isValid = validator(field.value);
+    
+    if (!isValid) {
+        field.setAttribute('aria-invalid', 'true');
+        errorElement.textContent = getErrorMessage(fieldId);
+        errorElement.classList.add('show');
+        return false;
+    } else {
+        field.setAttribute('aria-invalid', 'false');
+        errorElement.classList.remove('show');
+        return true;
+    }
+}
+
+function getErrorMessage(fieldId) {
+    const messages = {
+        'dog-name': 'Please enter your dog\'s name',
+        'breed': 'Please enter your dog\'s breed',
+        'age': 'Please enter your dog\'s age',
+        'time-slot': 'Please select a time slot'
+    };
+    return messages[fieldId] || 'This field is required';
+}
+
+function validateForm() {
+    const validations = [
+        validateField('dog-name', 'dog-name-error', (value) => value.trim().length > 0),
+        validateField('breed', 'breed-error', (value) => value.trim().length > 0),
+        validateField('age', 'age-error', (value) => value.trim().length > 0),
+        validateField('time-slot', 'time-slot-error', (value) => value.length > 0)
+    ];
+    
+    return validations.every(valid => valid);
+}
+
 // Scheduler Form Handling
 document.querySelector('.scheduler-form').addEventListener('submit', function(e) {
     e.preventDefault();
+    
+    // Validate form
+    if (!validateForm()) {
+        // Focus on first invalid field
+        const firstInvalid = document.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) {
+            firstInvalid.focus();
+        }
+        return;
+    }
     
     // Collect form data
     const formData = {
@@ -90,6 +177,34 @@ document.querySelector('.scheduler-form').addEventListener('submit', function(e)
     
     // Reset form
     this.reset();
+    
+    // Clear all error states
+    document.querySelectorAll('[aria-invalid]').forEach(field => {
+        field.setAttribute('aria-invalid', 'false');
+    });
+    document.querySelectorAll('.error-message').forEach(error => {
+        error.classList.remove('show');
+    });
+});
+
+// Real-time validation
+document.addEventListener('DOMContentLoaded', function() {
+    const requiredFields = ['dog-name', 'breed', 'age', 'time-slot'];
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('blur', function() {
+                validateField(fieldId, `${fieldId}-error`, (value) => value.trim().length > 0);
+            });
+            
+            field.addEventListener('input', function() {
+                if (field.getAttribute('aria-invalid') === 'true') {
+                    validateField(fieldId, `${fieldId}-error`, (value) => value.trim().length > 0);
+                }
+            });
+        }
+    });
 });
 
 // Site Owner Interface (Simple Content Management)

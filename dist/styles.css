@@ -42,6 +42,61 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
+/* Dog Hair Letters */
+.dog-hair-letters {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.dog-letter {
+    max-width: 80px;
+    height: auto;
+}
+
+.rates-subtitle {
+    display: block;
+    font-family: 'Fredoka', cursive;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #1a4d3a;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
+
+/* Responsive adjustments for dog hair letters */
+@media (max-width: 768px) {
+    .dog-hair-letters {
+        gap: 6px;
+    }
+    
+    .dog-letter {
+        max-width: 60px;
+    }
+    
+    .rates-subtitle {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dog-hair-letters {
+        gap: 4px;
+    }
+    
+    .dog-letter {
+        max-width: 50px;
+    }
+    
+    .rates-subtitle {
+        font-size: 1.5rem;
+    }
+}
+
 /* Navigation */
 .navbar {
     background: rgba(26, 77, 58, 0.95);
@@ -284,7 +339,7 @@ body {
 }
 
 .alt-bg {
-    background: linear-gradient(135deg, #2d5a47 0%, #3a6b56 100%);
+    background: #ffffff;
 }
 
 .container {
@@ -313,6 +368,15 @@ body {
     color: #f4f4f4;
 }
 
+/* White background sections need dark text */
+.alt-bg .section-title {
+    color: #1a4d3a;
+}
+
+.alt-bg .text-content p {
+    color: #1a4d3a;
+}
+
 .text-content {
     padding: 2rem 0;
 }
@@ -328,7 +392,7 @@ body {
 .text-content p {
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
-    color: #e8e8e8;
+    color: #f4f4f4;
 }
 
 /* Rates Grid */
@@ -340,34 +404,40 @@ body {
 }
 
 .rate-card {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2rem;
+    background: #1a4d3a;
+    padding: 1.5rem;
     border-radius: 15px;
     text-align: center;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #2d5a47;
     transition: all 0.3s ease;
     cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .rate-card:hover {
     transform: translateY(-5px);
-    background: rgba(212, 175, 55, 0.1);
-    border-color: #d4af37;
-    box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+    background: #2d5a47;
+    border-color: #3a6b56;
+    box-shadow: 0 5px 20px rgba(26, 77, 58, 0.3);
 }
 
 .rate-card h3 {
-    color: #f4f4f4;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
 }
 
 .price {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: #f4f4f4;
-    margin-bottom: 1rem;
+    color: #ffffff;
+    margin-bottom: 0.8rem;
+}
+
+.rate-card p {
+    color: #ffffff;
+    font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 /* Testimonials Grid */
@@ -439,6 +509,11 @@ body {
     font-weight: 600;
 }
 
+/* White background sections need dark form labels */
+.alt-bg .form-group label {
+    color: #1a4d3a;
+}
+
 .form-group input,
 .form-group textarea,
 .form-group select {
@@ -450,6 +525,26 @@ body {
     color: #f4f4f4;
     font-size: 1rem;
     transition: border-color 0.3s ease;
+}
+
+/* White background sections need dark form inputs */
+.alt-bg .form-group input,
+.alt-bg .form-group textarea,
+.alt-bg .form-group select {
+    background: #ffffff;
+    border: 2px solid #e9ecef;
+    color: #1a4d3a;
+}
+
+.alt-bg .form-group input:focus,
+.alt-bg .form-group textarea:focus,
+.alt-bg .form-group select:focus {
+    border-color: #1a4d3a;
+}
+
+.alt-bg .form-group input::placeholder,
+.alt-bg .form-group textarea::placeholder {
+    color: #6c757d;
 }
 
 .form-group input:focus,
@@ -476,7 +571,7 @@ body {
 
 .quiz-description {
     margin-top: 1rem;
-    color: #e8e8e8;
+    color: #f4f4f4;
     font-style: italic;
 }
 
@@ -520,6 +615,15 @@ body {
     font-weight: 600;
 }
 
+/* White background sections need dark blog text */
+.alt-bg .blog-header h3 {
+    color: #1a4d3a;
+}
+
+.alt-bg .blog-content p {
+    color: #1a4d3a;
+}
+
 .blog-toggle {
     font-size: 1.5rem;
     color: #d4af37;
@@ -547,6 +651,29 @@ body {
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
+}
+
+/* White background sections need dark read more links */
+.alt-bg .read-more {
+    color: #1a4d3a;
+}
+
+/* White background sections need dark blog items */
+.alt-bg .blog-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+}
+
+.alt-bg .blog-header {
+    background: #ffffff;
+}
+
+.alt-bg .blog-header:hover {
+    background: #f8f9fa;
+}
+
+.alt-bg .blog-content {
+    background: #ffffff;
 }
 
 .read-more:hover {
