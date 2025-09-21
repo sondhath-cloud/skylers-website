@@ -446,6 +446,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize animations
     initializeAnimations();
     
+    // Initialize Supabase connection
+    initializeSupabaseConnection();
+    
     // Initialize owner interface
     initializeOwnerInterface();
     
@@ -648,6 +651,231 @@ function initializeNavigation() {
     
     // Update on page load
     updateActiveNav();
+}
+
+// ===== SUPABASE DATABASE INTEGRATION =====
+
+let supabase = null;
+let isSupabaseConnected = false;
+
+// Initialize Supabase connection
+function initializeSupabaseConnection() {
+    isSupabaseConnected = window.initializeSupabase();
+    if (isSupabaseConnected) {
+        supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
+        console.log('Connected to Supabase database');
+        
+        // Load content from database on startup
+        loadContentFromDatabase();
+    } else {
+        console.log('Using localStorage fallback mode');
+        loadSavedContent(); // Fallback to existing localStorage system
+    }
+}
+
+// Database Operations
+async function saveContentToDatabase(sectionId, content) {
+    if (!isSupabaseConnected) {
+        // Fallback to localStorage
+        saveToLocalStorage('content', sectionId, content);
+        return;
+    }
+    
+    try {
+        const { error } = await supabase
+            .from(window.SUPABASE_CONFIG.tables.content)
+            .upsert({
+                section_id: sectionId,
+                content: content,
+                updated_at: new Date().toISOString()
+            });
+        
+        if (error) throw error;
+        console.log(`Content saved to database for section: ${sectionId}`);
+    } catch (error) {
+        console.error('Error saving to database:', error);
+        // Fallback to localStorage
+        saveToLocalStorage('content', sectionId, content);
+    }
+}
+
+async function savePhotoToDatabase(sectionId, photoData) {
+    if (!isSupabaseConnected) {
+        // Fallback to localStorage
+        saveToLocalStorage('photos', sectionId, photoData);
+        return;
+    }
+    
+    try {
+        const { error } = await supabase
+            .from(window.SUPABASE_CONFIG.tables.photos)
+            .upsert({
+                section_id: sectionId,
+                photo_data: photoData,
+                updated_at: new Date().toISOString()
+            });
+        
+        if (error) throw error;
+        console.log(`Photo saved to database for section: ${sectionId}`);
+    } catch (error) {
+        console.error('Error saving photo to database:', error);
+        // Fallback to localStorage
+        saveToLocalStorage('photos', sectionId, photoData);
+    }
+}
+
+async function saveBlogPostToDatabase(title, content) {
+    if (!isSupabaseConnected) {
+        // Fallback to localStorage
+        saveToLocalStorage('blogs', Date.now(), { title, content });
+        return;
+    }
+    
+    try {
+        const { error } = await supabase
+            .from(window.SUPABASE_CONFIG.tables.blogPosts)
+            .insert({
+                title: title,
+                content: content,
+                created_at: new Date().toISOString()
+            });
+        
+        if (error) throw error;
+        console.log('Blog post saved to database');
+        
+        // Refresh blog section
+        await loadBlogPostsFromDatabase();
+    } catch (error) {
+        console.error('Error saving blog post to database:', error);
+        // Fallback to localStorage
+        saveToLocalStorage('blogs', Date.now(), { title, content });
+    }
+}
+
+async function loadContentFromDatabase() {
+    if (!isSupabaseConnected) {
+        loadSavedContent(); // Use existing localStorage fallback
+        return;
+    }
+    
+    try {
+        // Load content
+        const { data: contentData, error: contentError } = await supabase
+            .from(window.SUPABASE_CONFIG.tables.content)
+            .select('*');
+        
+        if (contentError) throw contentError;
+        
+        // Apply content updates
+        if (contentData) {
+            contentData.forEach(item => {
+                updateSectionContent(item.section_id, item.content);
+            });
+        }
+        
+        // Load photos
+        const { data: photosData, error: photosError } = await supabase
+            .from(window.SUPABASE_CONFIG.tables.photos)
+            .select('*');
+        
+        if (photosError) throw photosError;
+        
+        // Apply photo updates
+        if (photosData) {
+            photosData.forEach(item => {
+                updateSectionPhoto(item.section_id, item.photo_data);
+            });
+        }
+        
+        // Load blog posts
+        await loadBlogPostsFromDatabase();
+        
+        console.log('Content loaded from database');
+    } catch (error) {
+        console.error('Error loading from database:', error);
+        loadSavedContent(); // Fallback to localStorage
+    }
+}
+
+async function loadBlogPostsFromDatabase() {
+    if (!isSupabaseConnected) return;
+    
+    try {
+        const { data, error } = await supabase
+            .from(window.SUPABASE_CONFIG.tables.blogPosts)
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        // Update blog section with new posts
+        if (data && data.length > 0) {
+            updateBlogSection(data);
+        }
+    } catch (error) {
+        console.error('Error loading blog posts:', error);
+    }
+}
+
+function updateBlogSection(blogPosts) {
+    const blogSection = document.querySelector('#blog .blog-accordion');
+    if (!blogSection) return;
+    
+    // Clear existing blog items (keep the first few default ones or replace all)
+    blogSection.innerHTML = '';
+    
+    blogPosts.forEach((post, index) => {
+        const blogItem = document.createElement('div');
+        blogItem.className = 'blog-item';
+        blogItem.innerHTML = `
+            <div class="blog-header" 
+                 onclick="toggleBlog(${index})" 
+                 role="button" 
+                 tabindex="0"
+                 aria-expanded="false"
+                 aria-controls="blog-content-${index}"
+                 onkeydown="handleBlogKeydown(event, ${index})">
+                <h3>${post.title}</h3>
+                <span class="blog-toggle" aria-hidden="true">+</span>
+            </div>
+            <div class="blog-content" id="blog-content-${index}">
+                <p>${post.content}</p>
+            </div>
+        `;
+        blogSection.appendChild(blogItem);
+    });
+}
+
+// Helper functions for localStorage fallback
+function saveToLocalStorage(type, key, data) {
+    const storageKey = type === 'content' ? 'siteContent' : 
+                      type === 'photos' ? 'sitePhotos' : 'siteBlogs';
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+    saved[key] = data;
+    localStorage.setItem(storageKey, JSON.stringify(saved));
+}
+
+// Helper function to update section content
+function updateSectionContent(sectionId, content) {
+    const section = document.getElementById(sectionId);
+    const textContent = section?.querySelector('.text-content');
+    
+    if (textContent) {
+        const title = textContent.querySelector('h2');
+        const titleHTML = title ? title.outerHTML : '';
+        const paragraphsHTML = content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+        textContent.innerHTML = titleHTML + paragraphsHTML;
+    }
+}
+
+// Helper function to update section photo
+function updateSectionPhoto(sectionId, photoData) {
+    const section = document.getElementById(sectionId);
+    const img = section?.querySelector('.section-image');
+    
+    if (img) {
+        img.src = photoData;
+    }
 }
 
 // ===== OWNER INTERFACE SYSTEM =====
@@ -878,7 +1106,7 @@ function openSectionEditor(sectionId) {
 }
 
 // Save Section Content
-function saveSectionContent(sectionId, content) {
+async function saveSectionContent(sectionId, content) {
     const section = document.getElementById(sectionId);
     const textContent = section.querySelector('.text-content');
     
@@ -889,13 +1117,8 @@ function saveSectionContent(sectionId, content) {
         const paragraphsHTML = content.split('\n\n').map(p => `<p>${p}</p>`).join('');
         textContent.innerHTML = titleHTML + paragraphsHTML;
         
-        // Save to localStorage
-        const savedContent = JSON.parse(localStorage.getItem('siteContent') || '{}');
-        savedContent[sectionId] = {
-            content: content,
-            timestamp: Date.now()
-        };
-        localStorage.setItem('siteContent', JSON.stringify(savedContent));
+        // Save to database (with localStorage fallback)
+        await saveContentToDatabase(sectionId, content);
         
         showNotification('Content saved successfully!', 'success');
     }
@@ -979,17 +1202,15 @@ function openPhotoManager() {
 }
 
 // Update Section Photo
-function updateSectionPhoto(sectionId, photoData) {
+async function updateSectionPhoto(sectionId, photoData) {
     const section = document.getElementById(sectionId);
     const img = section.querySelector('.section-image');
     
     if (img) {
         img.src = photoData;
         
-        // Save to localStorage
-        const savedPhotos = JSON.parse(localStorage.getItem('sitePhotos') || '{}');
-        savedPhotos[sectionId] = photoData;
-        localStorage.setItem('sitePhotos', JSON.stringify(savedPhotos));
+        // Save to database (with localStorage fallback)
+        await savePhotoToDatabase(sectionId, photoData);
         
         showNotification('Photo updated successfully!', 'success');
     }
@@ -1071,14 +1292,9 @@ function openBlogManager() {
 }
 
 // Add Blog Post
-function addBlogPost(title, content) {
-    const savedBlogs = JSON.parse(localStorage.getItem('siteBlogs') || '[]');
-    savedBlogs.push({
-        title: title,
-        content: content,
-        timestamp: Date.now()
-    });
-    localStorage.setItem('siteBlogs', JSON.stringify(savedBlogs));
+async function addBlogPost(title, content) {
+    // Save to database (with localStorage fallback)
+    await saveBlogPostToDatabase(title, content);
 }
 
 // Testimonial Manager
