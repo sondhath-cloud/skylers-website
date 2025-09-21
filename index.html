@@ -11,6 +11,32 @@
     <!-- Skip Navigation Link for Accessibility -->
     <a href="#main-content" class="skip-link">Skip to main content</a>
     
+    <!-- Owner Login Modal -->
+    <div id="owner-login-modal" class="login-modal hidden">
+        <div class="login-content">
+            <h3>Site Owner Access</h3>
+            <form id="owner-login-form">
+                <div class="form-group">
+                    <label for="owner-username">Username</label>
+                    <input type="text" id="owner-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="owner-password">Password</label>
+                    <input type="password" id="owner-password" required>
+                </div>
+                <div class="login-buttons">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" id="cancel-login" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Owner Access Button (hidden by default) -->
+    <button id="owner-access-btn" class="owner-access-btn hidden" title="Owner Access">
+        <span>👑</span>
+    </button>
+    
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">

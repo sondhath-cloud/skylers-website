@@ -440,14 +440,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize video
     initializeVideo();
     
-    // Initialize owner interface
-    initializeOwnerInterface();
-    
     // Initialize navigation active states
     initializeNavigation();
     
     // Initialize animations
     initializeAnimations();
+    
+    // Initialize owner interface
+    initializeOwnerInterface();
     
     // Add scroll effect to navigation
     window.addEventListener('scroll', () => {
@@ -648,6 +648,523 @@ function initializeNavigation() {
     
     // Update on page load
     updateActiveNav();
+}
+
+// ===== OWNER INTERFACE SYSTEM =====
+
+// Owner credentials (in production, these should be stored securely)
+const OWNER_CREDENTIALS = {
+    username: 'skyler',
+    password: 'canine2024'
+};
+
+let isOwnerMode = false;
+let ownerSession = null;
+
+// Initialize Owner Interface
+function initializeOwnerInterface() {
+    // Check for existing owner session
+    ownerSession = localStorage.getItem('ownerSession');
+    if (ownerSession) {
+        try {
+            const session = JSON.parse(ownerSession);
+            if (session.expires > Date.now()) {
+                activateOwnerMode();
+                return;
+            } else {
+                localStorage.removeItem('ownerSession');
+            }
+        } catch (e) {
+            localStorage.removeItem('ownerSession');
+        }
+    }
+    
+    // Show owner access button after 3 seconds
+    setTimeout(() => {
+        document.getElementById('owner-access-btn').classList.remove('hidden');
+    }, 3000);
+    
+    // Setup event listeners
+    setupOwnerEventListeners();
+}
+
+// Setup Owner Event Listeners
+function setupOwnerEventListeners() {
+    const ownerAccessBtn = document.getElementById('owner-access-btn');
+    const loginModal = document.getElementById('owner-login-modal');
+    const loginForm = document.getElementById('owner-login-form');
+    const cancelLogin = document.getElementById('cancel-login');
+    
+    ownerAccessBtn.addEventListener('click', () => {
+        loginModal.classList.remove('hidden');
+        document.getElementById('owner-username').focus();
+    });
+    
+    cancelLogin.addEventListener('click', () => {
+        loginModal.classList.add('hidden');
+    });
+    
+    loginForm.addEventListener('submit', handleOwnerLogin);
+    
+    // Close modal on background click
+    loginModal.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+            loginModal.classList.add('hidden');
+        }
+    });
+}
+
+// Handle Owner Login
+function handleOwnerLogin(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('owner-username').value;
+    const password = document.getElementById('owner-password').value;
+    
+    if (username === OWNER_CREDENTIALS.username && password === OWNER_CREDENTIALS.password) {
+        // Create session
+        const session = {
+            username: username,
+            expires: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+        };
+        
+        localStorage.setItem('ownerSession', JSON.stringify(session));
+        ownerSession = session;
+        
+        // Hide login modal and activate owner mode
+        document.getElementById('owner-login-modal').classList.add('hidden');
+        activateOwnerMode();
+        
+        // Clear form
+        document.getElementById('owner-login-form').reset();
+    } else {
+        alert('Invalid credentials. Please try again.');
+    }
+}
+
+// Activate Owner Mode
+function activateOwnerMode() {
+    isOwnerMode = true;
+    document.body.classList.add('owner-mode');
+    
+    // Hide owner access button
+    document.getElementById('owner-access-btn').classList.add('hidden');
+    
+    // Create owner toolbar
+    createOwnerToolbar();
+    
+    // Add edit buttons to sections
+    addEditButtonsToSections();
+    
+    // Load saved content
+    loadSavedContent();
+}
+
+// Create Owner Toolbar
+function createOwnerToolbar() {
+    const toolbar = document.createElement('div');
+    toolbar.className = 'owner-toolbar';
+    toolbar.innerHTML = `
+        <button id="edit-content-btn" class="active">📝 Edit Content</button>
+        <button id="manage-photos-btn">📸 Photos</button>
+        <button id="manage-blog-btn">📰 Blog</button>
+        <button id="manage-testimonials-btn">⭐ Testimonials</button>
+        <button id="owner-logout-btn">🚪 Logout</button>
+    `;
+    
+    document.body.appendChild(toolbar);
+    
+    // Setup toolbar event listeners
+    setupToolbarEventListeners(toolbar);
+}
+
+// Setup Toolbar Event Listeners
+function setupToolbarEventListeners(toolbar) {
+    const editContentBtn = toolbar.querySelector('#edit-content-btn');
+    const managePhotosBtn = toolbar.querySelector('#manage-photos-btn');
+    const manageBlogBtn = toolbar.querySelector('#manage-blog-btn');
+    const manageTestimonialsBtn = toolbar.querySelector('#manage-testimonials-btn');
+    const logoutBtn = toolbar.querySelector('#owner-logout-btn');
+    
+    editContentBtn.addEventListener('click', () => toggleEditMode('content'));
+    managePhotosBtn.addEventListener('click', () => openPhotoManager());
+    manageBlogBtn.addEventListener('click', () => openBlogManager());
+    manageTestimonialsBtn.addEventListener('click', () => openTestimonialManager());
+    logoutBtn.addEventListener('click', logoutOwner);
+    
+    // Active state management
+    [editContentBtn, managePhotosBtn, manageBlogBtn, manageTestimonialsBtn].forEach(btn => {
+        btn.addEventListener('click', () => {
+            toolbar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+}
+
+// Toggle Edit Mode
+function toggleEditMode(mode) {
+    const sections = document.querySelectorAll('.section');
+    
+    sections.forEach(section => {
+        const editBtn = section.querySelector('.edit-btn');
+        if (editBtn) {
+            editBtn.style.display = mode === 'content' ? 'block' : 'none';
+        }
+    });
+}
+
+// Add Edit Buttons to Sections
+function addEditButtonsToSections() {
+    const sections = document.querySelectorAll('.section');
+    
+    sections.forEach(section => {
+        if (!section.querySelector('.edit-btn')) {
+            const editBtn = document.createElement('button');
+            editBtn.className = 'edit-btn';
+            editBtn.textContent = '✏️ Edit';
+            editBtn.addEventListener('click', () => openSectionEditor(section.id));
+            section.appendChild(editBtn);
+        }
+    });
+}
+
+// Open Section Editor
+function openSectionEditor(sectionId) {
+    const section = document.getElementById(sectionId);
+    const textContent = section.querySelector('.text-content');
+    
+    if (!textContent) return;
+    
+    // Get current content (excluding titles)
+    const paragraphs = textContent.querySelectorAll('p');
+    const currentContent = Array.from(paragraphs).map(p => p.innerText).join('\n\n');
+    
+    // Create enhanced edit modal
+    const modal = document.createElement('div');
+    modal.className = 'login-modal';
+    modal.innerHTML = `
+        <div class="login-content" style="max-width: 600px;">
+            <h3>Edit ${sectionId.charAt(0).toUpperCase() + sectionId.slice(1)} Section</h3>
+            <div class="form-group">
+                <label>Content (titles are protected)</label>
+                <textarea id="section-content" style="width: 100%; height: 300px; padding: 1rem; border-radius: 10px; border: 2px solid rgba(212, 175, 55, 0.3); background: rgba(255, 255, 255, 0.1); color: #f4f4f4; font-family: inherit; resize: vertical;">${currentContent}</textarea>
+            </div>
+            <div class="login-buttons">
+                <button id="save-section" class="btn btn-primary">Save Changes</button>
+                <button id="cancel-section" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Event listeners
+    modal.querySelector('#save-section').addEventListener('click', () => {
+        const newContent = modal.querySelector('#section-content').value;
+        saveSectionContent(sectionId, newContent);
+        document.body.removeChild(modal);
+    });
+    
+    modal.querySelector('#cancel-section').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Save Section Content
+function saveSectionContent(sectionId, content) {
+    const section = document.getElementById(sectionId);
+    const textContent = section.querySelector('.text-content');
+    
+    if (textContent) {
+        // Preserve title and update paragraphs
+        const title = textContent.querySelector('h2');
+        const titleHTML = title ? title.outerHTML : '';
+        const paragraphsHTML = content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+        textContent.innerHTML = titleHTML + paragraphsHTML;
+        
+        // Save to localStorage
+        const savedContent = JSON.parse(localStorage.getItem('siteContent') || '{}');
+        savedContent[sectionId] = {
+            content: content,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('siteContent', JSON.stringify(savedContent));
+        
+        showNotification('Content saved successfully!', 'success');
+    }
+}
+
+// Photo Manager
+function openPhotoManager() {
+    const modal = document.createElement('div');
+    modal.className = 'photo-upload-modal';
+    modal.innerHTML = `
+        <div class="photo-upload-content">
+            <h3>📸 Photo Manager</h3>
+            <div class="form-group">
+                <label>Select Section to Update Photo:</label>
+                <select id="photo-section" style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(212, 175, 55, 0.3); background: rgba(255, 255, 255, 0.1); color: #f4f4f4;">
+                    <option value="about">About Section</option>
+                    <option value="rates">Rates Section</option>
+                    <option value="scheduler">Schedule Section</option>
+                    <option value="contact">Contact Section</option>
+                    <option value="quiz">Quiz Section</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Upload New Photo:</label>
+                <input type="file" id="photo-upload" accept="image/*" style="width: 100%; padding: 1rem; border-radius: 10px; border: 2px solid rgba(212, 175, 55, 0.3); background: rgba(255, 255, 255, 0.1); color: #f4f4f4;">
+            </div>
+            <div id="photo-preview-container" style="display: none;">
+                <img id="photo-preview" class="photo-preview" alt="Preview">
+            </div>
+            <div class="login-buttons">
+                <button id="save-photo" class="btn btn-primary">Save Photo</button>
+                <button id="cancel-photo" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Event listeners
+    const photoUpload = modal.querySelector('#photo-upload');
+    const previewContainer = modal.querySelector('#photo-preview-container');
+    const preview = modal.querySelector('#photo-preview');
+    
+    photoUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                previewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    modal.querySelector('#save-photo').addEventListener('click', () => {
+        const section = modal.querySelector('#photo-section').value;
+        const file = photoUpload.files[0];
+        
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                updateSectionPhoto(section, e.target.result);
+                document.body.removeChild(modal);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            showNotification('Please select a photo to upload.', 'error');
+        }
+    });
+    
+    modal.querySelector('#cancel-photo').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Update Section Photo
+function updateSectionPhoto(sectionId, photoData) {
+    const section = document.getElementById(sectionId);
+    const img = section.querySelector('.section-image');
+    
+    if (img) {
+        img.src = photoData;
+        
+        // Save to localStorage
+        const savedPhotos = JSON.parse(localStorage.getItem('sitePhotos') || '{}');
+        savedPhotos[sectionId] = photoData;
+        localStorage.setItem('sitePhotos', JSON.stringify(savedPhotos));
+        
+        showNotification('Photo updated successfully!', 'success');
+    }
+}
+
+// Blog Manager
+function openBlogManager() {
+    const modal = document.createElement('div');
+    modal.className = 'blog-editor-modal';
+    modal.innerHTML = `
+        <div class="blog-editor-content">
+            <h3>📰 Blog Manager</h3>
+            <div class="form-group">
+                <label>Blog Post Title:</label>
+                <input type="text" id="blog-title" placeholder="Enter blog post title">
+            </div>
+            <div class="form-group">
+                <label>Blog Post Content:</label>
+                <textarea id="blog-content" placeholder="Write your blog post content here..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Add to existing blog posts:</label>
+                <button id="add-blog-post" class="btn btn-primary">Add Blog Post</button>
+            </div>
+            <div id="blog-preview" class="blog-preview" style="display: none;">
+                <h4 id="preview-title"></h4>
+                <p id="preview-content"></p>
+            </div>
+            <div class="login-buttons">
+                <button id="save-blog" class="btn btn-primary">Save Blog</button>
+                <button id="cancel-blog" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Event listeners
+    const titleInput = modal.querySelector('#blog-title');
+    const contentInput = modal.querySelector('#blog-content');
+    const preview = modal.querySelector('#blog-preview');
+    const previewTitle = modal.querySelector('#preview-title');
+    const previewContent = modal.querySelector('#preview-content');
+    
+    // Live preview
+    [titleInput, contentInput].forEach(input => {
+        input.addEventListener('input', () => {
+            previewTitle.textContent = titleInput.value || 'Blog Post Title';
+            previewContent.textContent = contentInput.value || 'Blog post content will appear here...';
+            preview.style.display = 'block';
+        });
+    });
+    
+    modal.querySelector('#add-blog-post').addEventListener('click', () => {
+        if (titleInput.value && contentInput.value) {
+            addBlogPost(titleInput.value, contentInput.value);
+            titleInput.value = '';
+            contentInput.value = '';
+            preview.style.display = 'none';
+            showNotification('Blog post added!', 'success');
+        } else {
+            showNotification('Please fill in both title and content.', 'error');
+        }
+    });
+    
+    modal.querySelector('#save-blog').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    modal.querySelector('#cancel-blog').addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+}
+
+// Add Blog Post
+function addBlogPost(title, content) {
+    const savedBlogs = JSON.parse(localStorage.getItem('siteBlogs') || '[]');
+    savedBlogs.push({
+        title: title,
+        content: content,
+        timestamp: Date.now()
+    });
+    localStorage.setItem('siteBlogs', JSON.stringify(savedBlogs));
+}
+
+// Testimonial Manager
+function openTestimonialManager() {
+    showNotification('Testimonial manager coming soon!', 'info');
+}
+
+// Load Saved Content
+function loadSavedContent() {
+    // Load saved photos
+    const savedPhotos = JSON.parse(localStorage.getItem('sitePhotos') || '{}');
+    Object.keys(savedPhotos).forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        const img = section?.querySelector('.section-image');
+        if (img) {
+            img.src = savedPhotos[sectionId];
+        }
+    });
+    
+    // Load saved content
+    const savedContent = JSON.parse(localStorage.getItem('siteContent') || '{}');
+    Object.keys(savedContent).forEach(sectionId => {
+        const section = document.getElementById(sectionId);
+        const textContent = section?.querySelector('.text-content');
+        if (textContent) {
+            const title = textContent.querySelector('h2');
+            const titleHTML = title ? title.outerHTML : '';
+            const paragraphsHTML = savedContent[sectionId].content.split('\n\n').map(p => `<p>${p}</p>`).join('');
+            textContent.innerHTML = titleHTML + paragraphsHTML;
+        }
+    });
+}
+
+// Show Notification
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        z-index: 10003;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    `;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            document.body.removeChild(notification);
+        }
+    }, 3000);
+}
+
+// Logout Owner
+function logoutOwner() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('ownerSession');
+        ownerSession = null;
+        isOwnerMode = false;
+        
+        // Remove owner mode styling
+        document.body.classList.remove('owner-mode');
+        
+        // Remove toolbar
+        const toolbar = document.querySelector('.owner-toolbar');
+        if (toolbar) {
+            document.body.removeChild(toolbar);
+        }
+        
+        // Remove edit buttons
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.remove();
+        });
+        
+        // Show owner access button
+        document.getElementById('owner-access-btn').classList.remove('hidden');
+        
+        showNotification('Logged out successfully!', 'info');
+    }
 }
 
 // Loading States and Animations
