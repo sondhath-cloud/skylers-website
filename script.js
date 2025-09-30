@@ -175,11 +175,9 @@ if (schedulerForm) {
         };
         
         // Simulate form submission (replace with actual API call)
-        setTimeout(() => {
-            // Store in localStorage for now (in production, this would go to a server)
-            const existingBookings = JSON.parse(localStorage.getItem('pawsitiveBookings') || '[]');
-            existingBookings.push(formData);
-            localStorage.setItem('pawsitiveBookings', JSON.stringify(existingBookings));
+        setTimeout(async () => {
+            // Store in database via PHP API
+            await saveTrainingSessionToAPI(formData);
             
             // Hide loading state
             hideButtonLoading(submitButton);
@@ -446,8 +444,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize animations
     initializeAnimations();
     
-    // Initialize Supabase connection
-    initializeSupabaseConnection();
+    // Initialize PHP API connection
+    initializeAPIConnection();
     
     // Initialize owner interface
     initializeOwnerInterface();
@@ -653,45 +651,75 @@ function initializeNavigation() {
     updateActiveNav();
 }
 
-// ===== SUPABASE DATABASE INTEGRATION =====
+// ===== PHP API DATABASE INTEGRATION =====
 
-let supabase = null;
-let isSupabaseConnected = false;
+let isAPIConnected = false;
 
-// Initialize Supabase connection
-function initializeSupabaseConnection() {
-    isSupabaseConnected = window.initializeSupabase();
-    if (isSupabaseConnected) {
-        supabase = window.supabase.createClient(window.SUPABASE_CONFIG.url, window.SUPABASE_CONFIG.anonKey);
-        console.log('Connected to Supabase database');
+// Initialize PHP API connection
+function initializeAPIConnection() {
+    // Test API connection
+    testAPIConnection();
+}
+
+// Test API connection
+async function testAPIConnection() {
+    try {
+        const response = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'get_content'
+            })
+        });
         
-        // Load content from database on startup
-        loadContentFromDatabase();
-    } else {
-        console.log('Using localStorage fallback mode');
-        loadSavedContent(); // Fallback to existing localStorage system
+        if (response.ok) {
+            isAPIConnected = true;
+            console.log('Connected to PHP API');
+            loadContentFromAPI();
+        } else {
+            console.log('API connection failed, using localStorage fallback');
+            loadSavedContent();
+        }
+    } catch (error) {
+        console.error('API connection error:', error);
+        console.log('Using localStorage fallback');
+        loadSavedContent();
     }
 }
 
 // Database Operations
 async function saveContentToDatabase(sectionId, content) {
-    if (!isSupabaseConnected) {
+    if (!isAPIConnected) {
         // Fallback to localStorage
         saveToLocalStorage('content', sectionId, content);
         return;
     }
     
     try {
-        const { error } = await supabase
-            .from(window.SUPABASE_CONFIG.tables.content)
-            .upsert({
+        const response = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'save_content',
                 section_id: sectionId,
-                content: content,
-                updated_at: new Date().toISOString()
-            });
+                content: content
+            })
+        });
         
-        if (error) throw error;
-        console.log(`Content saved to database for section: ${sectionId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        if (result.success) {
+            console.log(`Content saved to database for section: ${sectionId}`);
+        } else {
+            throw new Error(result.error || 'Unknown error');
+        }
     } catch (error) {
         console.error('Error saving to database:', error);
         // Fallback to localStorage
@@ -700,23 +728,35 @@ async function saveContentToDatabase(sectionId, content) {
 }
 
 async function savePhotoToDatabase(sectionId, photoData) {
-    if (!isSupabaseConnected) {
+    if (!isAPIConnected) {
         // Fallback to localStorage
         saveToLocalStorage('photos', sectionId, photoData);
         return;
     }
     
     try {
-        const { error } = await supabase
-            .from(window.SUPABASE_CONFIG.tables.photos)
-            .upsert({
+        const response = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'save_photo',
                 section_id: sectionId,
-                photo_data: photoData,
-                updated_at: new Date().toISOString()
-            });
+                photo_data: photoData
+            })
+        });
         
-        if (error) throw error;
-        console.log(`Photo saved to database for section: ${sectionId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        if (result.success) {
+            console.log(`Photo saved to database for section: ${sectionId}`);
+        } else {
+            throw new Error(result.error || 'Unknown error');
+        }
     } catch (error) {
         console.error('Error saving photo to database:', error);
         // Fallback to localStorage
@@ -725,26 +765,37 @@ async function savePhotoToDatabase(sectionId, photoData) {
 }
 
 async function saveBlogPostToDatabase(title, content) {
-    if (!isSupabaseConnected) {
+    if (!isAPIConnected) {
         // Fallback to localStorage
         saveToLocalStorage('blogs', Date.now(), { title, content });
         return;
     }
     
     try {
-        const { error } = await supabase
-            .from(window.SUPABASE_CONFIG.tables.blogPosts)
-            .insert({
+        const response = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'save_blog_post',
                 title: title,
-                content: content,
-                created_at: new Date().toISOString()
-            });
+                content: content
+            })
+        });
         
-        if (error) throw error;
-        console.log('Blog post saved to database');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
-        // Refresh blog section
-        await loadBlogPostsFromDatabase();
+        const result = await response.json();
+        if (result.success) {
+            console.log('Blog post saved to database');
+            // Refresh blog section
+            await loadBlogPostsFromAPI();
+        } else {
+            throw new Error(result.error || 'Unknown error');
+        }
     } catch (error) {
         console.error('Error saving blog post to database:', error);
         // Fallback to localStorage
@@ -752,43 +803,55 @@ async function saveBlogPostToDatabase(title, content) {
     }
 }
 
-async function loadContentFromDatabase() {
-    if (!isSupabaseConnected) {
+async function loadContentFromAPI() {
+    if (!isAPIConnected) {
         loadSavedContent(); // Use existing localStorage fallback
         return;
     }
     
     try {
         // Load content
-        const { data: contentData, error: contentError } = await supabase
-            .from(window.SUPABASE_CONFIG.tables.content)
-            .select('*');
+        const contentResponse = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'get_content'
+            })
+        });
         
-        if (contentError) throw contentError;
-        
-        // Apply content updates
-        if (contentData) {
-            contentData.forEach(item => {
-                updateSectionContent(item.section_id, item.content);
-            });
+        if (contentResponse.ok) {
+            const contentResult = await contentResponse.json();
+            if (contentResult.success && contentResult.data) {
+                contentResult.data.forEach(item => {
+                    updateSectionContent(item.section_id, item.content);
+                });
+            }
         }
         
         // Load photos
-        const { data: photosData, error: photosError } = await supabase
-            .from(window.SUPABASE_CONFIG.tables.photos)
-            .select('*');
+        const photosResponse = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'get_photos'
+            })
+        });
         
-        if (photosError) throw photosError;
-        
-        // Apply photo updates
-        if (photosData) {
-            photosData.forEach(item => {
-                updateSectionPhoto(item.section_id, item.photo_data);
-            });
+        if (photosResponse.ok) {
+            const photosResult = await photosResponse.json();
+            if (photosResult.success && photosResult.data) {
+                photosResult.data.forEach(item => {
+                    updateSectionPhoto(item.section_id, item.photo_data);
+                });
+            }
         }
         
         // Load blog posts
-        await loadBlogPostsFromDatabase();
+        await loadBlogPostsFromAPI();
         
         console.log('Content loaded from database');
     } catch (error) {
@@ -797,20 +860,25 @@ async function loadContentFromDatabase() {
     }
 }
 
-async function loadBlogPostsFromDatabase() {
-    if (!isSupabaseConnected) return;
+async function loadBlogPostsFromAPI() {
+    if (!isAPIConnected) return;
     
     try {
-        const { data, error } = await supabase
-            .from(window.SUPABASE_CONFIG.tables.blogPosts)
-            .select('*')
-            .order('created_at', { ascending: false });
+        const response = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'get_blog_posts'
+            })
+        });
         
-        if (error) throw error;
-        
-        // Update blog section with new posts
-        if (data && data.length > 0) {
-            updateBlogSection(data);
+        if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data && result.data.length > 0) {
+                updateBlogSection(result.data);
+            }
         }
     } catch (error) {
         console.error('Error loading blog posts:', error);
@@ -846,6 +914,51 @@ function updateBlogSection(blogPosts) {
     });
 }
 
+async function saveTrainingSessionToAPI(formData) {
+    if (!isAPIConnected) {
+        // Fallback to localStorage
+        const existingBookings = JSON.parse(localStorage.getItem('pawsitiveBookings') || '[]');
+        existingBookings.push(formData);
+        localStorage.setItem('pawsitiveBookings', JSON.stringify(existingBookings));
+        return;
+    }
+    
+    try {
+        const response = await fetch('./api/content.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'save_training_session',
+                dog_name: formData.dogName,
+                breed: formData.breed,
+                age: formData.age,
+                training_goals: formData.trainingGoals || '',
+                behavioral_issues: formData.behavioralIssues || '',
+                time_slot: formData.timeSlot
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        if (result.success) {
+            console.log('Training session saved to database');
+        } else {
+            throw new Error(result.error || 'Unknown error');
+        }
+    } catch (error) {
+        console.error('Error saving training session:', error);
+        // Fallback to localStorage
+        const existingBookings = JSON.parse(localStorage.getItem('pawsitiveBookings') || '[]');
+        existingBookings.push(formData);
+        localStorage.setItem('pawsitiveBookings', JSON.stringify(existingBookings));
+    }
+}
+
 // Helper functions for localStorage fallback
 function saveToLocalStorage(type, key, data) {
     const storageKey = type === 'content' ? 'siteContent' : 
@@ -853,19 +966,6 @@ function saveToLocalStorage(type, key, data) {
     const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
     saved[key] = data;
     localStorage.setItem(storageKey, JSON.stringify(saved));
-}
-
-// Helper function to update section content
-function updateSectionContent(sectionId, content) {
-    const section = document.getElementById(sectionId);
-    const textContent = section?.querySelector('.text-content');
-    
-    if (textContent) {
-        const title = textContent.querySelector('h2');
-        const titleHTML = title ? title.outerHTML : '';
-        const paragraphsHTML = content.split('\n\n').map(p => `<p>${p}</p>`).join('');
-        textContent.innerHTML = titleHTML + paragraphsHTML;
-    }
 }
 
 // Helper function to update section photo
