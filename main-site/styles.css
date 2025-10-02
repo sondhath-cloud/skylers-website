@@ -513,7 +513,7 @@ body {
     background: transparent !important;
     background-color: transparent !important;
     position: relative;
-    transform: translate(-140px, -90px);
+    transform: translate(140px, -90px);
     z-index: 10;
 }
 
