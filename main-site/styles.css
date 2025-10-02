@@ -510,6 +510,8 @@ body {
     text-align: right;
     display: flex;
     justify-content: flex-end;
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
 .signature-image {
@@ -517,6 +519,8 @@ body {
     height: auto;
     opacity: 0.9;
     filter: brightness(1.1) contrast(1.1);
+    background: transparent !important;
+    background-color: transparent !important;
 }
 
 /* Client Portal Styles */
