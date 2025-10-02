@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Portal - Canine Coaching</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2><a href="index.html" style="color: inherit; text-decoration: none;">Canine Coaching</a></h2>
+            </div>
+            <div class="nav-menu" 
+                 id="nav-menu" 
+                 role="navigation" 
+                 aria-label="Main navigation"
+                 aria-hidden="true">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#rates" class="nav-link">Rates</a>
+                <a href="index.html#testimonials" class="nav-link">★ ★ ★ ★ ★</a>
+                <a href="index.html#scheduler" class="nav-link">Schedule</a>
+                <a href="index.html#quiz" class="nav-link">Quiz</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="hamburger" 
+                 id="hamburger" 
+                 role="button" 
+                 aria-label="Toggle navigation menu"
+                 aria-expanded="false"
+                 aria-controls="nav-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Client Login Section -->
+    <section class="section client-login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="login-content">
+                    <h2 class="section-title short-hair">Client Portal</h2>
+                    <p class="login-subtitle">Access your dog's progress videos and training updates</p>
+                    
+                    <form id="client-login-form" class="login-form">
+                        <div class="form-group">
+                            <label for="client-email">Email Address</label>
+                            <input type="email" 
+                                   id="client-email" 
+                                   name="email" 
+                                   required 
+                                   placeholder="Enter your email address"
+                                   aria-describedby="email-error">
+                            <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="client-password">Password</label>
+                            <input type="password" 
+                                   id="client-password" 
+                                   name="password" 
+                                   required 
+                                   placeholder="Enter your password"
+                                   aria-describedby="password-error">
+                            <div id="password-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-large">Login to Portal</button>
+                        
+                        <div class="login-links">
+                            <a href="#" id="forgot-password">Forgot Password?</a>
+                            <a href="#" id="register-client">New Client? Register Here</a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="login-image">
+                    <img src="assets/images/AdobeStock_560840138 Small.jpeg" alt="Client Portal" class="section-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Registration Modal -->
+    <div id="client-registration-modal" class="login-modal hidden">
+        <div class="login-content">
+            <h3>Register New Client</h3>
+            <form id="client-registration-form">
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Phone Number</label>
+                    <input type="tel" id="reg-phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-dog-name">Dog's Name</label>
+                    <input type="text" id="reg-dog-name" name="dog_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Create Password</label>
+                    <input type="password" id="reg-password" name="password" required>
+                </div>
+                <div class="login-buttons">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="button" id="cancel-registration" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Canine Coaching. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="client-login.js"></script>
+</body>
+</html>

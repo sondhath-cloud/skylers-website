@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canine Coaching - Professional Dog Training</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Skip Navigation Link for Accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <!-- Owner Login Modal -->
+    <div id="owner-login-modal" class="login-modal hidden">
+        <div class="login-content">
+            <h3>Site Owner Access</h3>
+            <form id="owner-login-form">
+                <div class="form-group">
+                    <label for="owner-username">Username</label>
+                    <input type="text" id="owner-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="owner-password">Password</label>
+                    <input type="password" id="owner-password" required>
+                </div>
+                <div class="login-buttons">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" id="cancel-login" class="btn btn-secondary">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Owner Access Button (hidden by default) -->
+    <button id="owner-access-btn" class="owner-access-btn hidden" title="Owner Access">
+        <span>Admin</span>
+    </button>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>Canine Coaching</h2>
+            </div>
+            <div class="nav-menu" 
+                 id="nav-menu" 
+                 role="navigation" 
+                 aria-label="Main navigation"
+                 aria-hidden="true">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#rates" class="nav-link">Rates</a>
+                <a href="#testimonials" class="nav-link">★ ★ ★ ★ ★</a>
+                <a href="#scheduler" class="nav-link">Schedule</a>
+                <a href="#quiz" class="nav-link">Quiz</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="hamburger" 
+                 id="hamburger" 
+                 role="button" 
+                 aria-label="Toggle navigation menu"
+                 aria-expanded="false"
+                 aria-controls="nav-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero" id="main-content">
+        <video class="hero-video" 
+               autoplay 
+               muted 
+               playsinline 
+               preload="metadata"
+               aria-label="Dogs playing and training in a park - background video">
+            <source src="assets/videos/hero-video.mp4" type="video/mp4">
+            <!-- Fallback for browsers that don't support video -->
+            <p>Your browser does not support the video tag. This video shows dogs playing and training in a park setting.</p>
+        </video>
+        <div class="video-loading">
+            <p>Loading video...</p>
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Transform Your Dog's Behavior with Canine Relational Coaching</h1>
+            <p class="hero-subtitle">I help dog-human teams build confidence and consistency through teaching interspecies communication principles.</p>
+            <div class="hero-buttons">
+                <a href="#quiz" class="btn btn-primary">Take Our Quiz</a>
+                <a href="#scheduler" class="btn btn-secondary">Schedule Session</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About/Philosophy Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="section-content">
+                <div class="text-content">
+                    <h2 class="section-title curly-hair" contenteditable="false">About Canine Relational Coaching</h2>
+                    <p><span class="transform-word">Transform</span> your dog's behavior with expert coaching. Many of the behaviors we label as nuisances or annoying, such as barking, reactivity, leash-pulling, toileting inside, jumping, separation anxiety, can be looked to as signs of a deeper misunderstanding between humans and their dogs. My work focuses on expanding perspective: helping people see behavior not as defiance, but as communication.</p>
+                    <p>My focus is on the relational dynamic as a whole. Each individual dog brings their own history, personality, and breed characteristics. Each human brings their own history, personality, and expectations. Instead of relying on quick fixes, I guide clients to lean into curiosity to discover the root of the problem. Through empathetic connection and clear, science-based explanation, I help dog-human teams build consistency, confidence, and genuine understanding.</p>
+                    <p>The result is more than better manners, it's a transformed relationship. By learning to interpret differently, you and your dog will gain stronger communication, deeper trust, and the tools to navigate new challenges together.</p>
+                    <p><strong>I help dog-human teams build confidence and consistency through teaching interspecies communication principles.</strong></p>
+                    <div class="signature-container">
+                        <img src="assets/images/signature.png" alt="Skyler's Signature" class="signature-image">
+                    </div>
+                </div>
+                <div class="image-content">
+                    <img src="assets/images/IMG_0819.jpg" alt="About Skyler" class="section-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rates Section -->
+    <section id="rates" class="section alt-bg">
+        <div class="container">
+            <h2 class="section-title short-hair" contenteditable="false">Rates</h2>
+            <div class="section-content">
+                <div class="image-content">
+                    <img src="assets/images/AdobeStock_339351727 Small.jpeg" alt="Training Rates" class="section-image">
+                </div>
+                <div class="text-content">
+                    <div class="rates-grid">
+                        <div class="rate-card" 
+                             onclick="showServicePopup('puppy')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Puppy Classes - $75 per session"
+                             onkeydown="handleCardKeydown(event, 'puppy')">
+                            <h3>Puppy Classes</h3>
+                            <p class="price">$75/session</p>
+                            <p>Perfect for puppies 8-16 weeks old. Early socialization, basic commands, house training, bite inhibition, and family guidance.</p>
+                        </div>
+                        <div class="rate-card" 
+                             onclick="showServicePopup('basic')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Basic Training - $100 per session"
+                             onkeydown="handleCardKeydown(event, 'basic')">
+                            <h3>Basic Training</h3>
+                            <p class="price">$100/session</p>
+                            <p>Essential commands and behavior</p>
+                        </div>
+                        <div class="rate-card" 
+                             onclick="showServicePopup('behavioral')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Behavioral Modification - $125 per session"
+                             onkeydown="handleCardKeydown(event, 'behavioral')">
+                            <h3>Behavioral Modification</h3>
+                            <p class="price">$125/session</p>
+                            <p>Addressing specific behavioral issues. Behavioral assessment, customized training plan, desensitization techniques, counter-conditioning methods.</p>
+                        </div>
+                        <div class="rate-card" 
+                             onclick="showServicePopup('advanced')" 
+                             role="button" 
+                             tabindex="0"
+                             aria-label="Learn more about Advanced Training - $100 per session"
+                             onkeydown="handleCardKeydown(event, 'advanced')">
+                            <h3>Advanced Training</h3>
+                            <p class="price">$100/session</p>
+                            <p>Complex commands and specialized skills. Advanced obedience commands, off-leash reliability, distance commands, specialized skills training.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Photo Montage Section -->
+    <section id="gallery" class="section">
+        <div class="container">
+            <h2 class="section-title short-hair" contenteditable="false">My Goal is Happy Dogs!</h2>
+            <p class="section-subtitle">See the amazing transformations and happy moments from our training sessions</p>
+            <div class="photo-montage">
+                <div class="photo-card" data-expand="1">
+                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop" alt="Happy Golden Retriever" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Bella</h3>
+                        <p>Golden Retriever</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="2">
+                    <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=300&fit=crop" alt="German Shepherd" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Max</h3>
+                        <p>German Shepherd</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="3">
+                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=300&fit=crop" alt="Border Collie" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Luna</h3>
+                        <p>Border Collie</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="4">
+                    <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop" alt="Labrador Puppy" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Charlie</h3>
+                        <p>Labrador Puppy</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="5">
+                    <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=300&fit=crop" alt="Husky" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Shadow</h3>
+                        <p>Siberian Husky</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="6">
+                    <img src="https://images.unsplash.com/photo-1551717743-49959800b1f6?w=400&h=300&fit=crop" alt="Beagle" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Buddy</h3>
+                        <p>Beagle</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="7">
+                    <img src="assets/images/120470C2-2123-494D-8EA5-CC3E5A3790F6_1_105_c.jpeg" alt="Happy Dog" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Milo</h3>
+                        <p>Golden Retriever</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="8">
+                    <img src="assets/images/2312A313-B5EF-4327-82DF-50AF11EF3FB0_1_105_c.jpeg" alt="Dog Training" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Ruby</h3>
+                        <p>Australian Shepherd</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="9">
+                    <img src="assets/images/7E049030-3D56-4300-85C2-71AFC2F4C99F_1_105_c.jpeg" alt="Dog Portrait" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Finn</h3>
+                        <p>Border Collie Mix</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="10">
+                    <img src="assets/images/F09A0036-6CA2-4E5B-AC14-7B08E2C20128_1_105_c.jpeg" alt="Dog Training Session" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Zoe</h3>
+                        <p>Labrador Mix</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="11">
+                    <img src="assets/images/DED45B07-BF34-4F3E-ABAC-EB35572D1449_1_105_c.jpeg" alt="Happy Dog" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Cooper</h3>
+                        <p>German Shepherd</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="12">
+                    <img src="assets/images/69391528-CD30-46D7-B7B6-E767308892DF_1_105_c.jpeg" alt="Dog Portrait" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Willow</h3>
+                        <p>Mixed Breed</p>
+                    </div>
+                </div>
+                <div class="photo-card" data-expand="13">
+                    <img src="assets/images/0274A603-49A0-41B2-9C13-A6E5C032BA8F_1_105_c.jpeg" alt="Dog Training" loading="lazy">
+                    <div class="photo-overlay">
+                        <h3>Jasper</h3>
+                        <p>Husky Mix</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="section">
+        <div class="container">
+            <h2 class="section-title short-hair" contenteditable="false">What Pet Parents Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-photo">
+                        <div class="image-placeholder">👩‍👧</div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"Skyler transformed our rescue dog from anxious and reactive to confident and calm. The techniques she taught us have been life-changing!"</p>
+                        <h4>- Jennifer and Max</h4>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-photo">
+                        <div class="image-placeholder">👨‍👦</div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"Our puppy was a handful, but Skyler's patience and expertise helped us establish good habits from the start. Highly recommend!"</p>
+                        <h4>- Mike and Luna</h4>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-photo">
+                        <div class="image-placeholder">👩‍👩‍👧</div>
+                    </div>
+                    <div class="testimonial-content">
+                        <p>"The behavioral modification program worked wonders for our dog's separation anxiety. Skyler's approach is both effective and compassionate."</p>
+                        <h4>- Lisa and Charlie</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scheduler Section -->
+    <section id="scheduler" class="section alt-bg hidden-section">
+        <div class="container">
+            <div class="section-content reverse">
+                <div class="image-content">
+                    <img src="assets/images/AdobeStock_549335124 Small.jpeg" alt="Schedule Session" class="section-image">
+                </div>
+                <div class="text-content">
+                    <h2 class="section-title long-hair" contenteditable="false">Schedule Your Session</h2>
+                    <p>Book a personalized training session for your dog. Choose from available time slots below.</p>
+                    <form class="scheduler-form" role="form" aria-label="Schedule Training Session">
+                        <div class="form-group">
+                            <label for="dog-name">Dog's Name <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="dog-name" 
+                                   name="dog-name" 
+                                   required 
+                                   aria-describedby="dog-name-error"
+                                   aria-invalid="false"
+                                   autocomplete="off">
+                            <div id="dog-name-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="breed">Breed <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="breed" 
+                                   name="breed" 
+                                   required 
+                                   aria-describedby="breed-error"
+                                   aria-invalid="false"
+                                   autocomplete="off">
+                            <div id="breed-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age <span class="required" aria-label="required">*</span></label>
+                            <input type="text" 
+                                   id="age" 
+                                   name="age" 
+                                   required 
+                                   aria-describedby="age-error"
+                                   aria-invalid="false"
+                                   placeholder="e.g., 2 years, 6 months"
+                                   autocomplete="off">
+                            <div id="age-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="training-goals">Training Goals</label>
+                            <textarea id="training-goals" 
+                                      name="training-goals" 
+                                      rows="3"
+                                      aria-describedby="training-goals-help"
+                                      placeholder="Describe what you'd like your dog to learn..."></textarea>
+                            <div id="training-goals-help" class="help-text">Optional: Tell us about your training goals</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="behavioral-issues">Behavioral Issues (if any)</label>
+                            <textarea id="behavioral-issues" 
+                                      name="behavioral-issues" 
+                                      rows="3"
+                                      aria-describedby="behavioral-issues-help"
+                                      placeholder="Describe any behavioral challenges..."></textarea>
+                            <div id="behavioral-issues-help" class="help-text">Optional: Share any behavioral concerns</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="time-slot">Available Time Slots <span class="required" aria-label="required">*</span></label>
+                            <select id="time-slot" 
+                                    name="time-slot" 
+                                    required 
+                                    aria-describedby="time-slot-error"
+                                    aria-invalid="false">
+                                <option value="">Select a time slot</option>
+                                <option value="mon-10am">Monday 10:00 AM</option>
+                                <option value="mon-2pm">Monday 2:00 PM</option>
+                                <option value="wed-10am">Wednesday 10:00 AM</option>
+                                <option value="wed-2pm">Wednesday 2:00 PM</option>
+                                <option value="fri-10am">Friday 10:00 AM</option>
+                                <option value="fri-2pm">Friday 2:00 PM</option>
+                            </select>
+                            <div id="time-slot-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Book Session</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz" class="section">
+        <div class="container">
+            <div class="section-content">
+                <div class="image-content">
+                    <img src="assets/images/AdobeStock_1537153482 Small.jpeg" alt="Dog Training Quiz" class="section-image">
+                </div>
+                <div class="text-content">
+                    <h2 class="section-title curly-hair" contenteditable="false">Find Your Perfect Training Path</h2>
+                    <p>Take our personalized quiz to discover the best training approach for your dog's unique needs and personality.</p>
+                    <div class="quiz-cta">
+                        <button class="btn btn-primary btn-large" onclick="startQuiz()">Start Quiz</button>
+                        <p class="quiz-description">Get personalized recommendations in just 5 minutes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="section alt-bg hidden-section">
+        <div class="container">
+            <h2 class="section-title fluffy-hair" contenteditable="false">Latest Training Tips</h2>
+            <div class="blog-accordion">
+                <div class="blog-item">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(0)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-0"
+                         aria-label="Expand article: 5 Essential Commands Every Dog Should Know"
+                         onkeydown="handleBlogKeydown(event, 0)">
+                        <h3>5 Essential Commands Every Dog Should Know</h3>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
+                    </div>
+                    <div class="blog-content" id="blog-content-0">
+                        <p>Master these fundamental commands to build a strong foundation for your dog's training journey...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="blog-item">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(1)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-1"
+                         aria-label="Expand article: Understanding Your Dog's Body Language"
+                         onkeydown="handleBlogKeydown(event, 1)">
+                        <h3>Understanding Your Dog's Body Language</h3>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
+                    </div>
+                    <div class="blog-content" id="blog-content-1">
+                        <p>Learn to read the subtle signals your dog sends to better understand their needs and emotions...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="blog-item">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(2)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-2"
+                         aria-label="Expand article: Puppy Socialization: The Critical First 16 Weeks"
+                         onkeydown="handleBlogKeydown(event, 2)">
+                        <h3>Puppy Socialization: The Critical First 16 Weeks</h3>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
+                    </div>
+                    <div class="blog-content" id="blog-content-2">
+                        <p>Why early socialization is crucial for your puppy's development and how to do it right...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+                <div class="blog-item">
+                    <div class="blog-header" 
+                         onclick="toggleBlog(3)" 
+                         role="button" 
+                         tabindex="0"
+                         aria-expanded="false"
+                         aria-controls="blog-content-3"
+                         aria-label="Expand article: Dealing with Separation Anxiety: A Gentle Approach"
+                         onkeydown="handleBlogKeydown(event, 3)">
+                        <h3>Dealing with Separation Anxiety: A Gentle Approach</h3>
+                        <span class="blog-toggle" aria-hidden="true">+</span>
+                    </div>
+                    <div class="blog-content" id="blog-content-3">
+                        <p>Help your dog feel secure when you're away with these proven techniques...</p>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </div>
+            <div class="blog-footer">
+                <a href="blog.html" class="btn btn-secondary">View All Posts</a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-content reverse">
+                <div class="image-content">
+                    <img src="assets/images/AdobeStock_560840138 Small.jpeg" alt="Contact Us" class="section-image">
+                </div>
+                <div class="text-content">
+                   
+                    <div class="contact-info-single">
+                        <h4>Get In Touch</h4>
+                        <p><strong>Phone:</strong> 602-769-9223</p>
+                        <p><strong>Email:</strong> hello@caninecoaching.app</p>
+                        <p><strong>Location:</strong> Phoenix Metro Area</p>
+                    </div>
+                    
+                    <form class="contact-form" action="api/contact.php" method="POST">
+                        <div class="form-group">
+                            <label for="contact-name">Name <span class="required">*</span></label>
+                            <input type="text" 
+                                   id="contact-name" 
+                                   name="name" 
+                                   required 
+                                   aria-describedby="name-error">
+                            <div id="name-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="contact-email">Email <span class="required">*</span></label>
+                            <input type="email" 
+                                   id="contact-email" 
+                                   name="email" 
+                                   required 
+                                   aria-describedby="email-error">
+                            <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message">What's going on? <span class="required">*</span></label>
+                            <textarea id="message" 
+                                      name="message" 
+                                      rows="4"
+                                      required
+                                      placeholder="How can I help you and your dog?"
+                                      aria-describedby="message-error"></textarea>
+                            <div id="message-error" class="error-message" role="alert" aria-live="polite"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Canine Coaching. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

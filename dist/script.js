@@ -433,6 +433,7 @@ function initializeVideo() {
     }
 }
 
+
 // Initialize everything when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize video
@@ -1516,6 +1517,98 @@ function hideButtonLoading(button) {
     button.classList.remove('btn-loading');
     button.disabled = false;
 }
+
+// Contact Form Handling
+function initializeContactForm() {
+    const contactForm = document.querySelector('.contact-form');
+    if (!contactForm) return;
+    
+    contactForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        // Show loading state
+        submitBtn.textContent = 'Sending...';
+        submitBtn.classList.add('btn-loading');
+        submitBtn.disabled = true;
+        
+        // Clear previous errors
+        clearContactErrors();
+        
+        try {
+            const formData = new FormData(contactForm);
+            const response = await fetch('api/contact.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                // Show success message
+                showContactSuccess(result.message);
+                contactForm.reset();
+            } else {
+                // Show error message
+                showContactError(result.message);
+            }
+        } catch (error) {
+            console.error('Contact form error:', error);
+            showContactError('Connection error. Please try again.');
+        } finally {
+            // Reset button state
+            submitBtn.textContent = originalText;
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+function clearContactErrors() {
+    const errorElements = document.querySelectorAll('.contact-form .error-message');
+    errorElements.forEach(element => {
+        element.textContent = '';
+        element.style.display = 'none';
+    });
+}
+
+function showContactError(message) {
+    // Create or update error message display
+    let errorDiv = document.querySelector('.contact-form .form-error');
+    if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.className = 'form-error';
+        errorDiv.style.cssText = 'color: #ff6b6b; background: rgba(255, 107, 107, 0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #ff6b6b;';
+        document.querySelector('.contact-form').insertBefore(errorDiv, document.querySelector('.contact-form button'));
+    }
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+}
+
+function showContactSuccess(message) {
+    // Create or update success message display
+    let successDiv = document.querySelector('.contact-form .form-success');
+    if (!successDiv) {
+        successDiv = document.createElement('div');
+        successDiv.className = 'form-success';
+        successDiv.style.cssText = 'color: #51cf66; background: rgba(81, 207, 102, 0.1); padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid #51cf66;';
+        document.querySelector('.contact-form').insertBefore(successDiv, document.querySelector('.contact-form button'));
+    }
+    successDiv.textContent = message;
+    successDiv.style.display = 'block';
+    
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+        successDiv.style.display = 'none';
+    }, 5000);
+}
+
+// Initialize contact form when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeContactForm();
+});
 
 // Form Loading States
 function handleFormSubmission(form, callback) {

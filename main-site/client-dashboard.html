@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard - Canine Coaching</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2><a href="index.html" style="color: inherit; text-decoration: none;">Canine Coaching</a></h2>
+            </div>
+            <div class="nav-menu" 
+                 id="nav-menu" 
+                 role="navigation" 
+                 aria-label="Main navigation"
+                 aria-hidden="true">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="index.html#rates" class="nav-link">Rates</a>
+                <a href="index.html#testimonials" class="nav-link">★ ★ ★ ★ ★</a>
+                <a href="index.html#scheduler" class="nav-link">Schedule</a>
+                <a href="index.html#quiz" class="nav-link">Quiz</a>
+                <a href="index.html#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="hamburger" 
+                 id="hamburger" 
+                 role="button" 
+                 aria-label="Toggle navigation menu"
+                 aria-expanded="false"
+                 aria-controls="nav-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Client Dashboard -->
+    <section class="section dashboard-section">
+        <div class="container">
+            <div class="dashboard-header">
+                <h2 class="section-title short-hair">Welcome back, <span id="client-name">Client</span>!</h2>
+                <p class="dashboard-subtitle">Track your dog's progress and view training videos</p>
+                <button id="logout-btn" class="btn btn-outline">Logout</button>
+            </div>
+
+            <!-- Dog Information -->
+            <div class="dashboard-card">
+                <h3>Your Dog's Information</h3>
+                <div class="dog-info">
+                    <div class="info-item">
+                        <strong>Dog's Name:</strong> <span id="dog-name">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Breed:</strong> <span id="dog-breed">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Age:</strong> <span id="dog-age">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Training Goals:</strong> <span id="training-goals">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Videos -->
+            <div class="dashboard-card">
+                <h3>Progress Videos</h3>
+                <div class="video-grid" id="video-grid">
+                    <div class="video-placeholder">
+                        <p>No videos uploaded yet. Videos will appear here after your training sessions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Training Notes -->
+            <div class="dashboard-card">
+                <h3>Latest Training Notes</h3>
+                <div class="notes-container" id="notes-container">
+                    <div class="note-placeholder">
+                        <p>Training notes will appear here after your sessions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Sessions -->
+            <div class="dashboard-card">
+                <h3>Upcoming Sessions</h3>
+                <div class="sessions-container" id="sessions-container">
+                    <div class="session-placeholder">
+                        <p>No upcoming sessions scheduled.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="video-modal hidden">
+        <div class="video-modal-content">
+            <button id="close-video-modal" class="close-btn">&times;</button>
+            <video id="modal-video" controls>
+                <source src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h4 id="video-title"></h4>
+                <p id="video-description"></p>
+                <p id="video-date"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Canine Coaching. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="client-dashboard.js"></script>
+</body>
+</html>
