@@ -521,6 +521,12 @@ body {
     filter: brightness(1.1) contrast(1.1);
     background: transparent !important;
     background-color: transparent !important;
+    background-image: none !important;
+    mix-blend-mode: normal;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    isolation: isolate;
 }
 
 /* Client Portal Styles */
