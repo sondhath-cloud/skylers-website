@@ -512,6 +512,9 @@ body {
     justify-content: flex-end;
     background: transparent !important;
     background-color: transparent !important;
+    position: relative;
+    transform: translate(-40px, -40px);
+    z-index: 10;
 }
 
 .signature-image {
@@ -527,6 +530,8 @@ body {
     outline: none !important;
     box-shadow: none !important;
     isolation: isolate;
+    position: relative;
+    z-index: 11;
 }
 
 /* Client Portal Styles */
